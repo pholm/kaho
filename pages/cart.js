@@ -17,6 +17,8 @@ import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useSession } from 'next-auth/react';
 
+import router from 'next/router';
+
 export default function CartPage() {
     const items = useSelector((state) => state.cart.items);
     const dates = useSelector((state) => state.dates);
@@ -36,13 +38,21 @@ export default function CartPage() {
 
     async function submitLoan() {
         const body = { reservations, startTime, endTime, userName };
-        await fetch('api/loan/submitLoan', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(body),
-        });
+        try {
+            const id = await fetch('api/loan/submitLoan', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+            })
+                .then((res) => res.json())
+                .then((res) => res.id);
+            console.log(id);
+            router.push(`/loan/${id}`);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -91,16 +101,3 @@ export default function CartPage() {
         </div>
     );
 }
-
-/*
-<h2>Aloitus</h2>
-            <Box padding={'4px'}>
-                <DatePicker selected={startDate} onChange={(date) => setStartDate(date)}/>
-            </Box>
-
-            <h2>Lopetus</h2>
-            <Box padding={'4px'}>
-                <DatePicker selected={endDate} onChange={(date) => setEndDate(date)}/>
-            </Box>
-           
-*/

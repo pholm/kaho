@@ -44,9 +44,10 @@ const cartSlice = createSlice({
             state.description = action.payload;
         },
 
-        clearCart: state => {
-
-        }
+        clearCart: (state) => {
+            state.items = [];
+            state.description = '';
+        },
     },
 });
 

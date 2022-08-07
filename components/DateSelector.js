@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import {
-     Box,
+    Box,
     Button,
     Heading,
     AlertDialog,
@@ -20,58 +20,61 @@ import { useState } from 'react';
 
 export default function DateSelector() {
     const dates = useSelector((state) => state.dates);
-    const cart = useSelector(state => state.cart)
+    const cart = useSelector((state) => state.cart);
     const dispatch = useDispatch();
 
-    const Ref = React.useRef()
+    const Ref = React.useRef();
 
-    const {isOpen, onOpen, onClose} = useDisclosure()
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
-    const [startDateModified, setStartDateModified] = useState(false)
-    const [endDateModified, setEndDateModified] = useState(false)
+    const [startDateModified, setStartDateModified] = useState(false);
+    const [endDateModified, setEndDateModified] = useState(false);
 
-    const [startDate, setLocalStartDate] = useState()
-    const [endDate, setLocalEndDate] = useState()
+    const [startDate, setLocalStartDate] = useState();
+    const [endDate, setLocalEndDate] = useState();
 
-
-    function setDates(){
-        dispatch(clearCart())
-
-        dispatch(setStartDate(startDate))
-        dispatch(setEndDate(endDate))
-        dispatch(datesSet(true))
-
-        onClose()
+    function setDates() {
+        dispatch(clearCart());
+        dispatch(setStartDate(startDate));
+        dispatch(setEndDate(endDate));
+        dispatch(datesSet(true));
+        onClose();
     }
 
     return (
         <>
             <Heading>Aloitus</Heading>
-
-            Aloita valitsemalla kamojen nouto- ja palautusajankohdat. <br/>
+            Aloita valitsemalla kamojen nouto- ja palautusajankohdat. <br />
             <Button onClick={onOpen}>
                 {dates.datesSet ? 'Muokkaa ajankohtia' : 'Aseta ajankohdat'}
             </Button>
-        
-
             <AlertDialog
                 isOpen={isOpen}
                 leastDestructiveRef={Ref}
                 onClose={onClose}
             >
                 <AlertDialogOverlay>
-                        <AlertDialogContent>
+                    <AlertDialogContent>
                         <AlertDialogHeader fontSize='lg' fontWeight='bold'>
                             Valitse varauksen ajankohdat
                         </AlertDialogHeader>
 
                         <AlertDialogBody>
                             <Heading size={'md'}>Nouto</Heading>
-                            <Box padding={'4px'} flexDirection='row' display='flex'>
+                            <Box
+                                padding={'4px'}
+                                flexDirection='row'
+                                display='flex'
+                            >
                                 <DatePicker
-                                    selected={startDateModified ? startDate : false}
+                                    selected={
+                                        startDateModified ? startDate : false
+                                    }
                                     placeholderText='🗓️ Kamojen noutoaika'
-                                    onChange={(date) => {setLocalStartDate(date); setStartDateModified(true)}}
+                                    onChange={(date) => {
+                                        setLocalStartDate(date);
+                                        setStartDateModified(true);
+                                    }}
                                     showTimeSelect
                                     dateFormat='d.M.yyyy H:mm'
                                     timeFormat='H:mm'
@@ -83,29 +86,38 @@ export default function DateSelector() {
                                 <DatePicker
                                     selected={endDateModified ? endDate : false}
                                     placeholderText='🗓️ Kamojen palautusaika'
-                                    onChange={(date) => {setLocalEndDate(date); setEndDateModified(true)}}
+                                    onChange={(date) => {
+                                        setLocalEndDate(date);
+                                        setEndDateModified(true);
+                                    }}
                                     showTimeSelect
                                     dateFormat='d.M.yyyy H:mm'
                                     timeFormat='H:mm'
                                 />
                             </Box>
-                            {dates.datesSet ? 'HUOM! Päivämäärien muokkaaminen tyhjentää ostoskorin' : null}
+                            {dates.datesSet
+                                ? 'HUOM! Päivämäärien muokkaaminen tyhjentää ostoskorin'
+                                : null}
                         </AlertDialogBody>
 
                         <AlertDialogFooter>
-                        <Button ref={Ref} onClick={onClose} ml={3}>
-                            Peruuta
-                        </Button>
-                        <Button colorScheme='blue' isDisabled={!startDateModified || !endDateModified} onClick={() => setDates()} ml={3}>
-                            Vahvista
-                        </Button>
+                            <Button ref={Ref} onClick={onClose} ml={3}>
+                                Peruuta
+                            </Button>
+                            <Button
+                                colorScheme='blue'
+                                isDisabled={
+                                    !startDateModified || !endDateModified
+                                }
+                                onClick={() => setDates()}
+                                ml={3}
+                            >
+                                Vahvista
+                            </Button>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialogOverlay>
-            </AlertDialog>                  
-        
+            </AlertDialog>
         </>
     );
-
-    
 }

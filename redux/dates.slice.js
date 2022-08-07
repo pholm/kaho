@@ -5,8 +5,7 @@ const dateSlice = createSlice({
     initialState: {
         startDate: new Date(),
         endDate: new Date(),
-        datesSet: false
-
+        datesSet: false,
     },
     reducers: {
         setStartDate: (state, action) => {
@@ -16,11 +15,17 @@ const dateSlice = createSlice({
             state.endDate = action.payload;
         },
         datesSet: (state, action) => {
-            state.datesSet = action.payload
-        }
+            state.datesSet = action.payload;
+        },
+        initializeDates: (state) => {
+            state.startDate = new Date();
+            state.endDate = new Date();
+            state.datesSet = false;
+        },
     },
 });
 
 export const dateReducer = dateSlice.reducer;
 
-export const { setStartDate, setEndDate, datesSet } = dateSlice.actions;
+export const { setStartDate, setEndDate, datesSet, initializeDates } =
+    dateSlice.actions;

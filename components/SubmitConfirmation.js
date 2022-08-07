@@ -19,8 +19,11 @@ import React from 'react';
 import { clearCart } from '/redux/cart.slice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSession } from 'next-auth/react';
+import { initializeDates } from '../redux/dates.slice';
+import { useRouter } from 'next/router';
 
 export default function SubmitConfirmation({ isOpen, onClose }) {
+    const router = useRouter();
     const dates = useSelector((state) => state.dates);
     const cart = useSelector((state) => state.cart);
     const cancelRef = React.useRef();
@@ -40,7 +43,7 @@ export default function SubmitConfirmation({ isOpen, onClose }) {
         });
     }
 
-    async function submitLoan() {
+    async function submitLoan(onClose) {
         const startTime = dates.startDate;
         const endTime = dates.endDate;
 
@@ -69,8 +72,16 @@ export default function SubmitConfirmation({ isOpen, onClose }) {
         })
             .then((response) => console.log(response))
             .then(() => dispatch(clearCart()))
-            .then(successToast())
-            .then(onClose);
+            .then(() => dispatch(initializeDates()))
+            .then(() => {
+                // this only closes the confirmation. It does not close the drawer?
+                onClose();
+                router.push('/account');
+                successToast();
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     return (
@@ -137,7 +148,7 @@ export default function SubmitConfirmation({ isOpen, onClose }) {
                         </Button>
                         <Button
                             colorScheme='green'
-                            onClick={() => submitLoan()}
+                            onClick={() => submitLoan(onClose)}
                             ml={3}
                         >
                             Vahvista varaus

@@ -22,7 +22,6 @@ import { useRef } from 'react';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { incrementAmount, decrementAmount } from '../redux/cart.slice';
-import { useSession } from 'next-auth/react';
 import { setDescription } from '../redux/cart.slice';
 import useSWR from 'swr';
 import SubmitConfirmation from './SubmitConfirmation';
@@ -121,62 +120,68 @@ export default function CartDrawer({ isOpen, onClose }) {
                             <Input id='endTime' value={endTime} readOnly />
                         </Box>
                     </Stack>
-                    
-                    {cart.items.length > 0 ?
-                    <Stack spacing='24px'>
-                        
+
+                    {cart.items.length > 0 ? (
+                        <Stack spacing='24px'>
+                            <Heading as='h3' size='md'>
+                                Valitut kamat
+                            </Heading>
+                            {cart.items.map(
+                                (item) =>
+                                    item.amount > 0 && (
+                                        <Box key={item.id}>
+                                            <FormLabel
+                                                htmlFor={`item-${item.id}`}
+                                            >
+                                                {item.name}
+                                            </FormLabel>
+                                            <InputGroup>
+                                                <InputLeftAddon>
+                                                    <IconButton
+                                                        icon={<MinusIcon />}
+                                                        aria-label='decrement'
+                                                        onClick={() =>
+                                                            dispatch(
+                                                                decrementAmount(
+                                                                    item.id
+                                                                )
+                                                            )
+                                                        }
+                                                    />
+                                                </InputLeftAddon>
+                                                <Input
+                                                    id={`item-${item.id}`}
+                                                    value={item.amount}
+                                                />
+                                                <InputRightAddon>
+                                                    <IconButton
+                                                        icon={<AddIcon />}
+                                                        aria-label='increment'
+                                                        onClick={() =>
+                                                            dispatch(
+                                                                incrementAmount(
+                                                                    item.id
+                                                                )
+                                                            )
+                                                        }
+                                                        isDisabled={
+                                                            getAvailability(
+                                                                item
+                                                            ).availableAmount <=
+                                                            0
+                                                        }
+                                                    />
+                                                </InputRightAddon>
+                                            </InputGroup>
+                                        </Box>
+                                    )
+                            )}
+                        </Stack>
+                    ) : (
                         <Heading as='h3' size='md'>
-                            Valitut kamat
+                            Ostoskori on tyhjä
                         </Heading>
-                        {cart.items.map(
-                            (item) =>
-                                item.amount > 0 && (
-                                    <Box key={item.id}>
-                                        <FormLabel htmlFor={`item-${item.id}`}>
-                                            {item.name}
-                                        </FormLabel>
-                                        <InputGroup>
-                                            <InputLeftAddon>
-                                                <IconButton
-                                                    icon={<MinusIcon />}
-                                                    aria-label='decrement'
-                                                    onClick={() =>
-                                                        dispatch(
-                                                            decrementAmount(
-                                                                item.id
-                                                            )
-                                                        )
-                                                    }
-                                                />
-                                            </InputLeftAddon>
-                                            <Input
-                                                id={`item-${item.id}`}
-                                                value={item.amount}
-                                            />
-                                            <InputRightAddon>
-                                                <IconButton
-                                                    icon={<AddIcon />}
-                                                    aria-label='increment'
-                                                    onClick={() =>
-                                                        dispatch(
-                                                            incrementAmount(
-                                                                item.id
-                                                            )
-                                                        )
-                                                    }
-                                                    isDisabled={
-                                                        getAvailability(item)
-                                                            .availableAmount <=
-                                                        0
-                                                    }
-                                                />
-                                            </InputRightAddon>
-                                        </InputGroup>
-                                    </Box>
-                                )
-                        )}
-                    </Stack>
-                    : <Heading as='h3' size='md'>Ostoskori on tyhjä</Heading>}
+                    )}
                 </DrawerBody>
 
                 <DrawerFooter borderTopWidth='1px'>
@@ -186,7 +191,7 @@ export default function CartDrawer({ isOpen, onClose }) {
                     <Button
                         colorScheme='blue'
                         onClick={ConfirmationDialog.onOpen}
-                        isDisabled={cart.items.length==0}
+                        isDisabled={cart.items.length == 0}
                     >
                         Varaa
                     </Button>

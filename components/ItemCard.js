@@ -98,14 +98,12 @@ export default function ItemCard({ item }) {
                             fontWeight='semibold'
                             as='h4'
                             lineHeight='tight'
-                            isTruncated
                             overflow='hidden'
                             noOfLines='1'
                             title={item.name}
                         >
                             {item.name}
                         </Box>
-                        
                     </Flex>
                     <Box>
                         <Button
@@ -121,19 +119,26 @@ export default function ItemCard({ item }) {
                             <Circle
                                 position='absolute'
                                 right='-7px'
-                                top='-7px'   
+                                top='-7px'
                                 size='20px'
                                 bg='red'
                                 color='white'
-                                display={cartItems
-                                            .filter((cartItem) => cartItem.id === item.id)
-                                            .map((cartItem) => cartItem.amount)
-                                            >0 ? 'block' : 'none'}
-                                        
+                                display={
+                                    cartItems
+                                        .filter(
+                                            (cartItem) =>
+                                                cartItem.id === item.id
+                                        )
+                                        .map((cartItem) => cartItem.amount) > 0
+                                        ? 'block'
+                                        : 'none'
+                                }
                             >
                                 {cartItems
-                                .filter((cartItem) => cartItem.id === item.id)
-                                .map((cartItem) => cartItem.amount)}
+                                    .filter(
+                                        (cartItem) => cartItem.id === item.id
+                                    )
+                                    .map((cartItem) => cartItem.amount)}
                             </Circle>
                         </Button>
                     </Box>
@@ -142,7 +147,6 @@ export default function ItemCard({ item }) {
                         fontWeight='semibold'
                         as='h4'
                         lineHeight='tight'
-                        isTruncated
                     >
                         Saatavilla:{' '}
                         {item.amount - getAvailability(item).reservedAmount}
